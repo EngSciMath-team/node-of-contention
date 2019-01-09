@@ -1,17 +1,58 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+
+    <argument-viewer
+      :current-arg="currentArg"
+      :previous-arg="previousArg"
+      @back="goBack"
+      @pickReply="handleReply"
+    />
+
   </div>
+
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import ArgumentViewer from './components/ArgumentViewer.vue'
+import args from './assets/arguments.js'
 
 export default {
-  name: 'app',
+  name: 'App',
+
   components: {
-    HelloWorld
+    ArgumentViewer
+  },
+
+  data () {
+    return {
+      args,
+      argPosition: {
+        current: 'start',
+        previous: null
+      }
+    }
+  },
+
+  computed: {
+    currentArg () {
+      return this.args[this.argPosition.current]
+    },
+
+    previousArg () {
+      return this.argPosition.previous
+    }
+  },
+
+  methods: {
+    goBack () {
+      this.$set(this.argPosition, 'current', this.argPosition.previous)
+      this.$set(this.argPosition, 'previous', null)
+    },
+
+    handleReply (reply) {
+      this.$set(this.argPosition, 'previous', this.argPosition.current)
+      this.$set(this.argPosition, 'current', reply.counter)
+    }
   }
 }
 </script>
@@ -23,6 +64,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>
